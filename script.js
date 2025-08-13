@@ -66,28 +66,60 @@ filterBtns.forEach(btn => {
     });
 });
 
+// === BEGIN MODIFIED SECTION ===
 // Contact Form Submission
+const scriptURL = 'https://script.google.com/macros/s/AKfycbwmdl0GbnJW7wFeY8T3B-vEUqexysBZ8gXeRFntnm0ZXX78ZaCT8R34uMN-rEVdEggPxA/exec';
 const contactForm = document.getElementById('contactForm');
 const successModal = document.getElementById('successModal');
-const closeModal = document.querySelector('.close-modal');
+const closeModalBtn = document.querySelector('.close-modal');
+const modalCloseBtn = document.querySelector('.close-modal-btn');
+const submitButton = contactForm.querySelector('button[type="submit"]');
 
-if (contactForm && successModal && closeModal) {
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        contactForm.reset();
-        successModal.classList.add('show');
+contactForm.addEventListener('submit', e => {
+    e.preventDefault();
+    submitButton.disabled = true; // Disable the button to prevent multiple submissions
+    
+    // Create a new FormData object from the form
+    const formData = new FormData(contactForm);
+
+    // Use the fetch API to send the data as a POST request
+    fetch(scriptURL, { 
+        method: 'POST', 
+        body: formData 
+    })
+    .then(response => response.json()) // Parse the JSON response from the script
+    .then(data => {
+        console.log('Success!', data);
+        successModal.classList.add('show'); // Show the modal on success
+        contactForm.reset(); // Clear the form fields after a successful submission
+    })
+    .catch(error => {
+        console.error('Error!', error.message);
+        alert('An error occurred. Please try again.');
+    })
+    .finally(() => {
+        submitButton.disabled = false; // Re-enable the button
     });
+});
 
-    closeModal.addEventListener('click', () => {
+// Modal close functionality remains the same
+if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', () => {
         successModal.classList.remove('show');
     });
-
-    window.addEventListener('click', (e) => {
-        if (e.target === successModal) {
-            successModal.classList.remove('show');
-        }
+}
+if (modalCloseBtn) {
+    modalCloseBtn.addEventListener('click', () => {
+        successModal.classList.remove('show');
     });
 }
+
+window.addEventListener('click', (e) => {
+    if (e.target === successModal) {
+        successModal.classList.remove('show');
+    }
+});
+// === END MODIFIED SECTION ===
 
 // Smooth scrolling for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
