@@ -510,17 +510,78 @@ section {
     gap: 1rem;
 }
 
-/* Contact Section */
-.contact-section {
-    background-color: var(--white);
+/* Contact Form Specific Styles */
+.contact-form {
+    background-color: var(--gray);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-.contact-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 3rem;
+.form-group {
+    margin-bottom: 1.5rem;
 }
 
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.form-security {
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+}
+
+.form-security i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+.form-submission-status {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+    display: none;
+}
+
+.form-submission-status.success {
+    background-color: #d4edda;
+    color: #155724;
+    display: block;
+}
+
+.form-submission-status.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    display: block;
+}
+
+/* Contact Info Styles */
 .contact-info {
     background-color: var(--gray);
     padding: 2rem;
@@ -531,11 +592,12 @@ section {
     display: flex;
     gap: 1rem;
     margin-bottom: 1.5rem;
+    align-items: flex-start;
 }
 
 .info-item i {
-    font-size: 1.5rem;
     color: var(--primary-color);
+    font-size: 1.2rem;
     margin-top: 0.3rem;
 }
 
@@ -559,11 +621,7 @@ section {
 
 .social-links a:hover {
     background-color: var(--dark-color);
-    transform: translateY(-5px);
-}
-
-.references {
-    margin-top: 2rem;
+    transform: translateY(-3px);
 }
 
 .reference-item {
@@ -576,10 +634,15 @@ section {
     border-bottom: none;
 }
 
-.contact-form {
-    background-color: var(--gray);
-    padding: 2rem;
-    border-radius: 10px;
+/* Responsive Layout */
+@media (max-width: 768px) {
+    .contact-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-info {
+        margin-bottom: 2rem;
+    }
 }
 
 .form-group {
