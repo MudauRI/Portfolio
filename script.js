@@ -66,28 +66,53 @@ filterBtns.forEach(btn => {
     });
 });
 
-// Contact Form Submission
-const contactForm = document.getElementById('contactForm');
-const successModal = document.getElementById('successModal');
-const closeModal = document.querySelector('.close-modal');
-
-if (contactForm && successModal && closeModal) {
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        contactForm.reset();
-        successModal.classList.add('show');
-    });
-
-    closeModal.addEventListener('click', () => {
-        successModal.classList.remove('show');
-    });
-
-    window.addEventListener('click', (e) => {
-        if (e.target === successModal) {
-            successModal.classList.remove('show');
+// Form Submission
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const submitBtn = document.getElementById('submitBtn');
+    const statusDiv = document.getElementById('formStatus');
+    const originalBtnText = submitBtn.innerHTML;
+    
+    // Validate reCAPTCHA
+    const recaptchaResponse = grecaptcha.getResponse();
+    if (!recaptchaResponse) {
+        statusDiv.textContent = "Please complete the reCAPTCHA verification";
+        statusDiv.className = "form-submission-status error";
+        statusDiv.style.display = "block";
+        return;
+    }
+    
+    // Show loading state
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    submitBtn.disabled = true;
+    statusDiv.style.display = "none";
+    
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json' }
+        });
+        
+        if (response.ok) {
+            statusDiv.textContent = "Message sent successfully! I'll respond soon.";
+            statusDiv.className = "form-submission-status success";
+            form.reset();
+            grecaptcha.reset();
+        } else {
+            throw new Error('Form submission failed');
         }
-    });
-}
+    } catch (error) {
+        statusDiv.textContent = "Error sending message. Please try again or email me directly at rebafenyiisrael@gmail.com";
+        statusDiv.className = "form-submission-status error";
+    } finally {
+        statusDiv.style.display = "block";
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
+        statusDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+});
 
 // Smooth scrolling for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
