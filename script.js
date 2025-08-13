@@ -1,214 +1,262 @@
-// Mobile Navigation
-const hamburger = document.getElementById('hamburger');
-const navMenu = document.querySelector('nav ul');
-const navLinks = document.querySelectorAll('nav ul li a');
+/**
+ * Main Application Script
+ * Contains all functionality for Mudau Rebafenyi's portfolio website
+ */
 
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
+document.addEventListener('DOMContentLoaded', function() {
+    // =============================================
+    // Mobile Navigation
+    // =============================================
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.querySelector('nav ul');
+    const navLinks = document.querySelectorAll('nav ul li a');
 
-// Close mobile menu when clicking a link
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        }
-    });
-});
-
-// Name Logo Interaction
-const nameLogo = document.getElementById('nameLogo');
-const namePopup = document.getElementById('namePopup');
-
-if (nameLogo && namePopup) {
-    nameLogo.addEventListener('mouseenter', () => {
-        namePopup.classList.add('show');
-    });
-
-    nameLogo.addEventListener('mouseleave', () => {
-        namePopup.classList.remove('show');
-    });
-}
-
-// Skills Tab Functionality
-const tabBtns = document.querySelectorAll('.tab-btn');
-const tabContents = document.querySelectorAll('.tab-content');
-
-tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        tabBtns.forEach(btn => btn.classList.remove('active'));
-        tabContents.forEach(content => content.classList.remove('active'));
-        
-        btn.classList.add('active');
-        const tabId = btn.getAttribute('data-tab');
-        document.getElementById(tabId).classList.add('active');
-    });
-});
-
-// Project Filter Functionality
-const filterBtns = document.querySelectorAll('.filter-btn');
-const projectCards = document.querySelectorAll('.project-card');
-
-filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        filterBtns.forEach(btn => btn.classList.remove('active'));
-        btn.classList.add('active');
-        
-        const filterValue = btn.getAttribute('data-filter');
-        
-        projectCards.forEach(card => {
-            card.style.display = (filterValue === 'all' || card.getAttribute('data-category') === filterValue) 
-                ? 'flex' 
-                : 'none';
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
         });
-    });
-});
-
-// Form Submission
-document.getElementById('contactForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const submitBtn = document.getElementById('submitBtn');
-    const statusDiv = document.getElementById('formStatus');
-    const originalBtnText = submitBtn.innerHTML;
-    
-    // Validate reCAPTCHA
-    const recaptchaResponse = grecaptcha.getResponse();
-    if (!recaptchaResponse) {
-        statusDiv.textContent = "Please complete the reCAPTCHA verification";
-        statusDiv.className = "form-submission-status error";
-        statusDiv.style.display = "block";
-        return;
     }
-    
-    // Show loading state
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-    submitBtn.disabled = true;
-    statusDiv.style.display = "none";
-    
-    try {
-        const response = await fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: { 'Accept': 'application/json' }
-        });
-        
-        if (response.ok) {
-            statusDiv.textContent = "Message sent successfully! I'll respond soon.";
-            statusDiv.className = "form-submission-status success";
-            form.reset();
-            grecaptcha.reset();
-        } else {
-            throw new Error('Form submission failed');
-        }
-    } catch (error) {
-        statusDiv.textContent = "Error sending message. Please try again or email me directly at rebafenyiisrael@gmail.com";
-        statusDiv.className = "form-submission-status error";
-    } finally {
-        statusDiv.style.display = "block";
-        submitBtn.innerHTML = originalBtnText;
-        submitBtn.disabled = false;
-        statusDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-});
 
-// Smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-            window.scrollTo({
-                top: targetElement.offsetTop - 80,
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-
-// Active link highlighting based on scroll position
-const sections = document.querySelectorAll('section');
-
-window.addEventListener('scroll', () => {
-    let current = '';
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        
-        if (pageYOffset >= (sectionTop - 100)) {
-            current = section.getAttribute('id');
-        }
-    });
-    
+    // Close mobile menu when clicking a link
     navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href').includes(current)) {
-            link.classList.add('active');
-        }
-    });
-});
-
-// Video Modal Functionality
-const videoPlayBtns = document.querySelectorAll('.video-play-btn');
-const videoModal = document.getElementById('videoModal');
-const videoElement = document.getElementById('projectVideo');
-const closeVideoModal = document.querySelector('.close-video-modal');
-
-if (videoPlayBtns.length && videoModal && videoElement && closeVideoModal) {
-    videoPlayBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const videoSrc = btn.getAttribute('href');
-            videoElement.setAttribute('src', videoSrc);
-            videoModal.classList.add('show');
-            videoElement.play();
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
         });
     });
 
-    closeVideoModal.addEventListener('click', () => {
-        videoModal.classList.remove('show');
-        videoElement.pause();
-        videoElement.currentTime = 0;
+    // =============================================
+    // Name Logo Interaction
+    // =============================================
+    const nameLogo = document.getElementById('nameLogo');
+    const namePopup = document.getElementById('namePopup');
+
+    if (nameLogo && namePopup) {
+        nameLogo.addEventListener('mouseenter', () => {
+            namePopup.classList.add('show');
+        });
+
+        nameLogo.addEventListener('mouseleave', () => {
+            namePopup.classList.remove('show');
+        });
+    }
+
+    // =============================================
+    // Skills Tab Functionality
+    // =============================================
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            btn.classList.add('active');
+            const tabId = btn.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+        });
     });
 
-    window.addEventListener('click', (e) => {
-        if (e.target === videoModal) {
+    // =============================================
+    // Project Filter Functionality
+    // =============================================
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(btn => btn.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const filterValue = btn.getAttribute('data-filter');
+            
+            projectCards.forEach(card => {
+                card.style.display = (filterValue === 'all' || card.getAttribute('data-category') === filterValue) 
+                    ? 'flex' 
+                    : 'none';
+            });
+        });
+    });
+
+    // =============================================
+    // Contact Form Submission (Enhanced with Formspree)
+    // =============================================
+    const contactForm = document.getElementById('contactForm');
+    const successModal = document.getElementById('successModal');
+    const closeModal = document.querySelector('.close-modal');
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+
+            // Validate reCAPTCHA if present
+            if (typeof grecaptcha !== 'undefined') {
+                const recaptchaResponse = grecaptcha.getResponse();
+                if (!recaptchaResponse) {
+                    alert("Please complete the reCAPTCHA verification");
+                    return;
+                }
+            }
+
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    // Show success modal if exists, otherwise alert
+                    if (successModal) {
+                        successModal.classList.add('show');
+                    } else {
+                        alert('Message sent successfully!');
+                    }
+                    form.reset();
+                    
+                    // Reset reCAPTCHA if present
+                    if (typeof grecaptcha !== 'undefined') {
+                        grecaptcha.reset();
+                    }
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            } catch (error) {
+                console.error('Form submission error:', error);
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+        });
+    }
+
+    // Close modal functionality
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            successModal.classList.remove('show');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === successModal) {
+                successModal.classList.remove('show');
+            }
+        });
+    }
+
+    // =============================================
+    // Smooth scrolling for anchor links
+    // =============================================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // =============================================
+    // Active link highlighting based on scroll position
+    // =============================================
+    const sections = document.querySelectorAll('section');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            
+            if (pageYOffset >= (sectionTop - 100)) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').includes(current)) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // =============================================
+    // Video Modal Functionality
+    // =============================================
+    const videoPlayBtns = document.querySelectorAll('.video-play-btn');
+    const videoModal = document.getElementById('videoModal');
+    const videoElement = document.getElementById('projectVideo');
+    const closeVideoModal = document.querySelector('.close-video-modal');
+
+    if (videoPlayBtns.length && videoModal && videoElement && closeVideoModal) {
+        videoPlayBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const videoSrc = btn.getAttribute('href');
+                videoElement.setAttribute('src', videoSrc);
+                videoModal.classList.add('show');
+                videoElement.play();
+            });
+        });
+
+        closeVideoModal.addEventListener('click', () => {
             videoModal.classList.remove('show');
             videoElement.pause();
             videoElement.currentTime = 0;
-        }
-    });
-}
+        });
 
-// Typing Animation
-const typedName = document.getElementById('typed-name');
-
-if (typedName) {
-    const name = "Rebafenyi Israel Mudau";
-    let i = 0;
-
-    function typeWriter() {
-        if (i < name.length) {
-            typedName.innerHTML += name.charAt(i);
-            i++;
-            setTimeout(typeWriter, 100);
-        }
+        window.addEventListener('click', (e) => {
+            if (e.target === videoModal) {
+                videoModal.classList.remove('show');
+                videoElement.pause();
+                videoElement.currentTime = 0;
+            }
+        });
     }
 
-    window.addEventListener('load', () => {
-        setTimeout(typeWriter, 500);
-    });
-}
+    // =============================================
+    // Typing Animation
+    // =============================================
+    const typedName = document.getElementById('typed-name');
 
-// Initialize Particles.js if container exists
-document.addEventListener('DOMContentLoaded', function() {
+    if (typedName) {
+        const name = "Rebafenyi Israel Mudau";
+        let i = 0;
+
+        function typeWriter() {
+            if (i < name.length) {
+                typedName.innerHTML += name.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+
+        // Start typing after a slight delay
+        setTimeout(typeWriter, 500);
+    }
+
+    // =============================================
+    // Initialize Particles.js if container exists
+    // =============================================
     if (document.getElementById('particles-js')) {
         particlesJS('particles-js', {
             "particles": {
@@ -299,4 +347,28 @@ document.addEventListener('DOMContentLoaded', function() {
             "retina_detect": true
         });
     }
+
+    // =============================================
+    // Additional Utility Functions
+    // =============================================
+    
+    /**
+     * Debounce function for performance optimization
+     * @param {Function} func - Function to debounce
+     * @param {number} wait - Wait time in milliseconds
+     */
+    function debounce(func, wait = 100) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func.apply(this, args);
+            }, wait);
+        };
+    }
+
+    // Debounce scroll events
+    window.addEventListener('scroll', debounce(function() {
+        // Any scroll-dependent code can go here
+    }));
 });
